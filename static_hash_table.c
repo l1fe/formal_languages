@@ -21,7 +21,7 @@ static_hash_table* static_hash_table_create() {
 	return h_table;
 }
 
-unsigned int calculate_hash(char* key, size_t key_size, int h_table_capacity) {
+int calculate_hash(char* key, size_t key_size, int h_table_capacity) {
 	if (key == NULL || key_size <= 0 || h_table_capacity <= 0) {
 		return -1;
 	}
@@ -45,6 +45,9 @@ static_hash_table* static_hash_table_put(static_hash_table* h_table, char* key, 
 		return NULL;
 	}
 
+	//printf("static_hash_table_put:: key: {%s}, key_size: {%zu}, value: {%d}, value_size: {%zu}\n", key, key_size, *(int*)value, value_size);
+	//printf("static_hash_table_put:: hash(key = {%s}): %d\n", key, hash);
+
 	bucket* new_bucket = (bucket*)malloc(sizeof(bucket));
 	if (new_bucket == NULL) {
 		abort_prg("static_hash_table_put:: malloc error");
@@ -62,6 +65,7 @@ static_hash_table* static_hash_table_put(static_hash_table* h_table, char* key, 
 	if (current_bucket == NULL) {
 		h_table->store[hash] = new_bucket;
 		new_bucket->prev_bucket = NULL;
+		//printf("static_hash_table_put:: put success!:)\n");
 	} else {
 		if (strcmp(current_bucket->key, key) == 0) {
 			if (current_bucket->key != key) {
@@ -72,6 +76,7 @@ static_hash_table* static_hash_table_put(static_hash_table* h_table, char* key, 
 			}
 			current_bucket->value = value;
 			free(new_bucket);
+			//printf("static_hash_table_put:: put success!:)\n");
 			return h_table;
 		}
 
@@ -85,12 +90,14 @@ static_hash_table* static_hash_table_put(static_hash_table* h_table, char* key, 
 				}
 				current_bucket->value = value;
 				free(new_bucket);
+				//printf("static_hash_table_put:: put success!:)\n");
 				return h_table;
 			}
 			current_bucket = current_bucket->next_bucket;
 		}
 		current_bucket->next_bucket = new_bucket;
 		new_bucket->prev_bucket = current_bucket;
+		//printf("static_hash_table_put:: put success!:)\n");
 	}
 
 	return h_table;
@@ -101,17 +108,23 @@ void* static_hash_table_get(static_hash_table* h_table, char* key) {
 		return NULL;
 	}
 
-	unsigned int i;
-	for (i = 0; i < h_table->capacity; ++i) {
-		bucket* current_bucket = h_table->store[i];
-		while (current_bucket != NULL) {
-			if (strcmp(current_bucket->key, key) == 0) {
-				return current_bucket->value;
-			}
-			current_bucket = current_bucket->next_bucket;
+	int hash = calculate_hash(key, strlen(key), h_table->capacity);
+	if (hash == -1) {
+		return NULL;
+	}
+	
+	//printf("static_hash_table_get:: key: {%s}, hash(key = {%s}): %d\n", key, key, hash);
+
+	bucket* current_bucket = h_table->store[hash];
+	while (current_bucket != NULL) {
+		if (strcmp(current_bucket->key, key) == 0) {
+			//printf("static_hash_table_get:: found! value = {%d}\n", *(int*)(current_bucket->value));
+			return current_bucket->value;
 		}
+		current_bucket = current_bucket->next_bucket;
 	}
 
+	//printf("static_hash_table_get:: not found!:(\n");
 	return NULL;
 }
 

@@ -30,7 +30,6 @@ void static_hash_table_print(static_hash_table*);
 void* static_hash_table_get(static_hash_table*, char*);
 bool static_hash_table_remove(static_hash_table*, char*);
 
-unsigned int calculate_hash(char*, size_t, int);
+int calculate_hash(char*, size_t, int);
 
 #endif
-

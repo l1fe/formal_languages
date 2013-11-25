@@ -1,10 +1,10 @@
 #include <stdbool.h>
+#include <string.h>
 
 #include "command_types.h"
 #include "static_hash_table.h"
 #include "state.h"
 #include "utils.h"
-#include <string.h>
 
 commands_state* create_commands_state() {
 	commands_state* state = (commands_state*)malloc(sizeof(commands_state));
@@ -22,6 +22,10 @@ commands_state* create_commands_state() {
 		state->args[i].argument_type = A_EMPTY;
 		state->args[i].value = NULL;
 	}
+
+	state->output = stdout;
+	state->input = stdin;
+	state->current_line = 0;
 
 	return state;
 }
@@ -45,19 +49,21 @@ bool set_current_command(commands_state* state, command_t command, int command_a
 	return true;
 }
 
-int get_var_value_by_name(commands_state* state, char* var_name, int* ind) {
+int get_var_value_by_name(commands_state* state, char* var_name, int* success_indicator) {
 	if (state == NULL || state->vars_h_table == NULL || var_name == NULL) {
-		*ind = -1;
+		*success_indicator = -1;
 		return -1;
 	}
 	
-	int* ht_get_result = (int*)static_hash_table_get(state->vars_h_table, var_name);
+	void* ht_get_result = static_hash_table_get(state->vars_h_table, var_name);
 	if (ht_get_result == NULL) {
-		*ind = -1;
+		*success_indicator = -1;
 		return -1;
 	}
 
-	return *ht_get_result;
+	*success_indicator = 0;
+
+	return atoi((char*)ht_get_result);
 }
 
 bool set_var_value(commands_state* state, char* var_name, int value) {
@@ -74,12 +80,12 @@ bool set_var_value(commands_state* state, char* var_name, int value) {
 	return true;
 }
 
-bool add_var(commands_state* state, char* var_name, int value) {
-	if (state == NULL || state->vars_h_table == NULL || var_name == NULL) {
+bool add_var(commands_state* state, char* var_name, void* var_value) {
+	if (state == NULL || state->vars_h_table == NULL || var_name == NULL || var_value == NULL) {
 		return false;
 	}
 
-	state->vars_h_table = static_hash_table_put(state->vars_h_table, var_name, strlen(var_name), &value, sizeof(int));
+	state->vars_h_table = static_hash_table_put(state->vars_h_table, var_name, strlen(var_name), var_value, strlen(var_value));
 
 	if (state->vars_h_table == NULL) {
 		abort_prg("add_var: hash_table_put error");
@@ -235,8 +241,9 @@ bool add_command_argument(commands_state* state, void* value, argument_t argumen
 	}
 
 	argument_struct argument_to_add;
-	argument_to_add.value = value;
 	argument_to_add.argument_type = argument_type;
+	argument_to_add.value = value;
+
 	state->args[state->current_arg_index] = argument_to_add;
 	state->current_arg_index += 1;
 
@@ -244,13 +251,12 @@ bool add_command_argument(commands_state* state, void* value, argument_t argumen
 }
 
 void clear_commands_state(commands_state* state) {
-	if (state == NULL || state->vars_h_table == NULL) {
+	if (state == NULL) {
 		return;
 	}
 
 	state->current_command = C_EMPTY;
 	state->current_command_args_num = 0;
-	static_hash_table_clear(state->vars_h_table);
 	
 	unsigned short i;
 	for (i = 0; i < MAX_ARGS_NUM; ++i) {
@@ -261,12 +267,63 @@ void clear_commands_state(commands_state* state) {
 	state->current_arg_index = 0;
 }
 
+//unsafe
+void destroy_commands_state(commands_state* state) {
+	if (state == NULL) {
+		return;
+	}
+
+	static_hash_table_drop_table(state->vars_h_table);
+	free(state);
+}
+
+//unsafe
+bool execute_C_LET(commands_state* state) {
+	char* var_name = (char*) (state->args[0].value);	
+	void* var_value = (void*) (state->args[1].value);
+
+	return add_var(state, var_name, var_value);
+}
+
+bool execute_C_OUT(commands_state* state) {
+	char* var_name = (char*)(state->args[0].value);
+
+	int success_indicator;
+	
+	//static_hash_table_print(state->vars_h_table);
+
+	int var_value = get_var_value_by_name(state, var_name, &success_indicator);
+	if (success_indicator < 0) {
+		return false;
+	}
+
+	fprintf(state->output, "%d\n", var_value);
+
+	return true;
+}
+
+//unsafe
 bool execute_current_command(commands_state* state) {
 	if (state == NULL || state->vars_h_table == NULL) {
 		return false;
 	}
 
-	printf("executing cmd.. OK\n");
+	bool execute_result;
+	switch(state->current_command) {
+		case C_EMPTY:
+			execute_result = false;
+			break;
+		case C_LET:
+			execute_result = execute_C_LET(state);	
+			break;
+		case C_OUT:
+			execute_result = execute_C_OUT(state);
+			break;
+		default:
+			execute_result = true;
+	}
+
 	clear_commands_state(state);
-	return true;
+	
+	return execute_result;
 }
