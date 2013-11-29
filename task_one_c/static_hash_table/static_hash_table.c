@@ -41,7 +41,7 @@ static_hash_table* static_hash_table_put(static_hash_table* h_table, char* key, 
 		return NULL;
 	}
 
-	printf("static_hash_table_put:: query to put (%s, %d)\n", key, value);
+	//printf("static_hash_table_put:: query to put (%s, %d)\n", key, value);
 
 	char* key_to_put = strdup(key);
 
@@ -54,8 +54,8 @@ static_hash_table* static_hash_table_put(static_hash_table* h_table, char* key, 
 	bucket* prev_bucket;
 
 	if (current_bucket == NULL) {
-		printf("static_hash_table_put:: h_table->store[%d] == NULL\n", hash);
-		printf("static_hash_table_put:: let's change it\n");
+		//printf("static_hash_table_put:: h_table->store[%d] == NULL\n", hash);
+		//printf("static_hash_table_put:: let's change it\n");
 		h_table->store[hash] = (bucket*)malloc(sizeof(bucket));
 		if (h_table->store[hash] == NULL) {
 			abort_prg("static_hash_table_put:: malloc error");
@@ -65,18 +65,18 @@ static_hash_table* static_hash_table_put(static_hash_table* h_table, char* key, 
 		h_table->store[hash]->value = value;
 		h_table->store[hash]->next_bucket = NULL;
 		h_table->store[hash]->prev_bucket = NULL;
-		printf("static_hash_table_put:: successfully put (%s, %d)\n", h_table->store[hash]->key, h_table->store[hash]->value);
+		//printf("static_hash_table_put:: successfully put (%s, %d)\n", h_table->store[hash]->key, h_table->store[hash]->value);
 	
 		return h_table;
 	} 
 
-	printf("static_hash_table_put:: h_table->store[%d] != NULL\n", hash);
-	printf("static_hash_table_put:: let's search element (%s, ?)\n", key_to_put);
+	//printf("static_hash_table_put:: h_table->store[%d] != NULL\n", hash);
+	//printf("static_hash_table_put:: let's search element (%s, ?)\n", key_to_put);
 	while (current_bucket != NULL) {
 		if ( strcmp(current_bucket->key, key_to_put) == 0 ) {
-			printf("static_hash_table_put:: found! (%s, %d)\n", current_bucket->key, current_bucket->value);
+			//printf("static_hash_table_put:: found! (%s, %d)\n", current_bucket->key, current_bucket->value);
 			current_bucket->value = value;
-			printf("static_hash_table_put:: successfully changed: now record is (%s, %d)\n", current_bucket->key, current_bucket->value);
+			//printf("static_hash_table_put:: successfully changed: now record is (%s, %d)\n", current_bucket->key, current_bucket->value);
 
 			return h_table;
 		}
@@ -85,7 +85,7 @@ static_hash_table* static_hash_table_put(static_hash_table* h_table, char* key, 
 		current_bucket = current_bucket->next_bucket;
 	}
 
-	printf("static_hash_table_put:: element not found! creating new one: (%s, %d)\n", key_to_put, value);
+	//printf("static_hash_table_put:: element not found! creating new one: (%s, %d)\n", key_to_put, value);
 	bucket* new_bucket = (bucket*)malloc(sizeof(bucket));
 	if (new_bucket == NULL) {
 		abort_prg("static_hash_table_put:: malloc error");
@@ -98,7 +98,7 @@ static_hash_table* static_hash_table_put(static_hash_table* h_table, char* key, 
 
 	prev_bucket->next_bucket = new_bucket;
 	
-	printf("static_hash_table_put:: element created and put successfully: (%s, %d)\n", new_bucket->key, new_bucket->value); 
+	//printf("static_hash_table_put:: element created and put successfully: (%s, %d)\n", new_bucket->key, new_bucket->value); 
 	
 	return h_table;
 }

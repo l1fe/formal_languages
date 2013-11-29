@@ -1,6 +1,7 @@
 #include <stdlib.h>
 #include <stdbool.h>
 #include <string.h>
+#include <limits.h>
 
 #include "../command_types.h"
 #include "../static_hash_table/static_hash_table.h"
@@ -401,6 +402,10 @@ bool execute_C_ADD(commands_state* state) {
 		return false;
 	}
 
+	if (INT_MAX - a_value < b_value || INT_MAX - b_value < a_value) {
+		return false;
+	}
+
 	return add_var(state, c_name, a_value + b_value);
 }
 
@@ -442,6 +447,10 @@ bool execute_C_MUL(commands_state* state) {
 	get_var_value_by_name(state, c_name, &success);
 	
 	if (success < 0 && !ALLOW_UNDECLARED) {
+		return false;
+	}
+
+	if (INT_MAX / a_value < b_value || INT_MAX / b_value < a_value) {
 		return false;
 	}
 
@@ -534,6 +543,10 @@ bool execute_C_SUB(commands_state* state) {
 	get_var_value_by_name(state, c_name, &success);
 
 	if (success < 0 && !ALLOW_UNDECLARED) {
+		return false;
+	}
+
+	if (INT_MAX - abs(a_value) < abs(b_value) || INT_MAX - abs(b_value) < abs(a_value)) {
 		return false;
 	}
 

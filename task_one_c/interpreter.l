@@ -14,7 +14,7 @@ void lets_exit(int);
 
 //unsafe
 bool jump_to_line(int line_to_jmp) {
-	printf("line to jump = %d\n", line_to_jmp);
+	//printf("line to jump = %d\n", line_to_jmp);
 
 	int succ;
 	int offset = dynamic_array_get(state->input_lines_info, line_to_jmp, &succ);
