@@ -8,8 +8,31 @@
 #include "./state/state.h"
 
 commands_state* state;
+FILE* input_file;
 
 void lets_exit(int);
+
+//unsafe
+bool jump_to_line(int line_to_jmp) {
+	printf("line to jump = %d\n", line_to_jmp);
+
+	int succ;
+	int offset = dynamic_array_get(state->input_lines_info, line_to_jmp, &succ);
+	if (succ < 0) {
+		return false;
+	}
+
+	/*fseek(yyin, offset, SEEK_SET);
+	state->current_line = line_to_jmp;
+	yyrestart(yyin);*/
+
+	fseek(state->input, offset, SEEK_SET);
+	state->current_line = line_to_jmp;
+
+	yyrestart(state->input);
+
+	return true;
+}
 
 %}
 
@@ -34,6 +57,7 @@ table			{ static_hash_table_print(state->vars_h_table); }
 				bool add_success = add_command_argument(state, 0, strdup(yytext), A_NAME); 
 				if ( !add_success ) {
 					fprintf(stderr, "[error]: syntax error: invalid command arguments at line %d\n", state->current_line);
+			
 					yyterminate();
 		  		}
 		
@@ -42,6 +66,7 @@ table			{ static_hash_table_print(state->vars_h_table); }
 
 				if (command_is_correct_indicator == -1) {
 					fprintf(stderr, "[error]: syntax error: invalid command arguments at line %d\n", state->current_line);
+			
 					yyterminate();
 		  		}
 
@@ -49,8 +74,11 @@ table			{ static_hash_table_print(state->vars_h_table); }
 					bool execute_success = execute_current_command(state);
 					if ( !execute_success ) {
 						fprintf(stderr, "[error]: syntax error: can't execute command at line %d\n", state->current_line);
+			
 						yyterminate();
 					}
+
+					set_current_command(state, C_EMPTY, 0);
 				}
 			}
 
@@ -58,6 +86,7 @@ table			{ static_hash_table_print(state->vars_h_table); }
 				bool add_success = add_command_argument(state, atoi(yytext), NULL, A_INT); 
 				if ( !add_success ) {
 					fprintf(stderr, "[error]: syntax error: invalid command arguments at line %d\n", state->current_line);
+			
 					yyterminate();
 		  		}
 		
@@ -66,6 +95,7 @@ table			{ static_hash_table_print(state->vars_h_table); }
 
 				if (command_is_correct_indicator == -1) {
 					fprintf(stderr, "[error]: syntax error: invalid command arguments at line %d\n", state->current_line);
+			
 					yyterminate();
 		  		}
 
@@ -73,8 +103,11 @@ table			{ static_hash_table_print(state->vars_h_table); }
 					bool execute_success = execute_current_command(state);
 					if ( !execute_success ) {
 						fprintf(stderr, "[error]: syntax error: can't execute command at line %d\n", state->current_line);
+			
 						yyterminate();
 					}
+
+					set_current_command(state, C_EMPTY, 0);
 				}
 			}
 
@@ -85,6 +118,7 @@ table			{ static_hash_table_print(state->vars_h_table); }
 \n			{ 
 				if (state->current_command != C_EMPTY) {
 					fprintf(stderr, "[error]: syntax error, invalid command arguments at line %d\n", state->current_line);
+			
 					yyterminate();
 		  		}
 
@@ -93,6 +127,7 @@ table			{ static_hash_table_print(state->vars_h_table); }
 
 .			{ 
 				fprintf(stderr, "[error]: unresolved symbol \'%s\' at line %d\n", yytext, state->current_line);
+			
 				yyterminate();
 			}
 
@@ -108,13 +143,34 @@ table			{ static_hash_table_print(state->vars_h_table); }
 void lets_exit(int status) {
 	destroy_commands_state(state);
 	yylex_destroy();
-
+	
+	fclose(input_file);
 	exit(status);
-
 }
-int main() {
-	state = create_commands_state();
 
+void say_hello() {
+	printf("||==========================================||\n");
+	printf("||                                          ||\n");
+	printf("||         3-address code interpreter       ||\n");
+	printf("||	  execute ./interpreter <FILE>	    ||\n");
+	printf("||					    ||\n");
+	printf("||==========================================||\n");	
+}
+
+int main(int argc, char* argv[]) {
+	say_hello();	
+	if (argc != 2) {
+		abort_prg("Error: correct way to execute: ./interpeter <FILE>");
+	} 
+
+	input_file = fopen(argv[1], "r");
+	if (input_file == NULL) {
+		abort_prg("Error: incorrect input file :(");
+	}
+
+	state = create_commands_state(input_file, stdout);
+	yyin = state->input;
+	
 	yylex();
 
 	lets_exit(0);

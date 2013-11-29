@@ -489,10 +489,33 @@ char *yytext;
 #include "./state/state.h"
 
 commands_state* state;
+FILE* input_file;
 
 void lets_exit(int);
 
-#line 496 "lex.yy.c"
+//unsafe
+bool jump_to_line(int line_to_jmp) {
+	printf("line to jump = %d\n", line_to_jmp);
+
+	int succ;
+	int offset = dynamic_array_get(state->input_lines_info, line_to_jmp, &succ);
+	if (succ < 0) {
+		return false;
+	}
+
+	/*fseek(yyin, offset, SEEK_SET);
+	state->current_line = line_to_jmp;
+	yyrestart(yyin);*/
+
+	fseek(state->input, offset, SEEK_SET);
+	state->current_line = line_to_jmp;
+
+	yyrestart(state->input);
+
+	return true;
+}
+
+#line 519 "lex.yy.c"
 
 #define INITIAL 0
 
@@ -679,10 +702,10 @@ YY_DECL
 	register char *yy_cp, *yy_bp;
 	register int yy_act;
     
-#line 20 "interpreter.l"
+#line 43 "interpreter.l"
 
 
-#line 686 "lex.yy.c"
+#line 709 "lex.yy.c"
 
 	if ( !(yy_init) )
 		{
@@ -767,61 +790,62 @@ do_action:	/* This label is used only to access EOF actions. */
 
 case 1:
 YY_RULE_SETUP
-#line 22 "interpreter.l"
+#line 45 "interpreter.l"
 { set_current_command(state, C_LET, 2); }
 	YY_BREAK
 case 2:
 YY_RULE_SETUP
-#line 23 "interpreter.l"
+#line 46 "interpreter.l"
 { set_current_command(state, C_MOV, 2); }
 	YY_BREAK
 case 3:
 YY_RULE_SETUP
-#line 24 "interpreter.l"
+#line 47 "interpreter.l"
 { set_current_command(state, C_ADD, 3); }
 	YY_BREAK
 case 4:
 YY_RULE_SETUP
-#line 25 "interpreter.l"
+#line 48 "interpreter.l"
 { set_current_command(state, C_SUB, 3); }
 	YY_BREAK
 case 5:
 YY_RULE_SETUP
-#line 26 "interpreter.l"
+#line 49 "interpreter.l"
 { set_current_command(state, C_MUL, 3); }
 	YY_BREAK
 case 6:
 YY_RULE_SETUP
-#line 27 "interpreter.l"
+#line 50 "interpreter.l"
 { set_current_command(state, C_DIV, 3); }
 	YY_BREAK
 case 7:
 YY_RULE_SETUP
-#line 28 "interpreter.l"
+#line 51 "interpreter.l"
 { set_current_command(state, C_JMP, 1); }
 	YY_BREAK
 case 8:
 YY_RULE_SETUP
-#line 29 "interpreter.l"
+#line 52 "interpreter.l"
 { set_current_command(state, C_CMP, 5); }
 	YY_BREAK
 case 9:
 YY_RULE_SETUP
-#line 30 "interpreter.l"
+#line 53 "interpreter.l"
 { set_current_command(state, C_OUT, 1); }
 	YY_BREAK
 case 10:
 YY_RULE_SETUP
-#line 31 "interpreter.l"
+#line 54 "interpreter.l"
 { static_hash_table_print(state->vars_h_table); }
 	YY_BREAK
 case 11:
 YY_RULE_SETUP
-#line 33 "interpreter.l"
+#line 56 "interpreter.l"
 {
 				bool add_success = add_command_argument(state, 0, strdup(yytext), A_NAME); 
 				if ( !add_success ) {
 					fprintf(stderr, "[error]: syntax error: invalid command arguments at line %d\n", state->current_line);
+			
 					yyterminate();
 		  		}
 		
@@ -830,6 +854,7 @@ YY_RULE_SETUP
 
 				if (command_is_correct_indicator == -1) {
 					fprintf(stderr, "[error]: syntax error: invalid command arguments at line %d\n", state->current_line);
+			
 					yyterminate();
 		  		}
 
@@ -837,18 +862,22 @@ YY_RULE_SETUP
 					bool execute_success = execute_current_command(state);
 					if ( !execute_success ) {
 						fprintf(stderr, "[error]: syntax error: can't execute command at line %d\n", state->current_line);
+			
 						yyterminate();
 					}
+
+					set_current_command(state, C_EMPTY, 0);
 				}
 			}
 	YY_BREAK
 case 12:
 YY_RULE_SETUP
-#line 57 "interpreter.l"
+#line 85 "interpreter.l"
 {
 				bool add_success = add_command_argument(state, atoi(yytext), NULL, A_INT); 
 				if ( !add_success ) {
 					fprintf(stderr, "[error]: syntax error: invalid command arguments at line %d\n", state->current_line);
+			
 					yyterminate();
 		  		}
 		
@@ -857,6 +886,7 @@ YY_RULE_SETUP
 
 				if (command_is_correct_indicator == -1) {
 					fprintf(stderr, "[error]: syntax error: invalid command arguments at line %d\n", state->current_line);
+			
 					yyterminate();
 		  		}
 
@@ -864,14 +894,17 @@ YY_RULE_SETUP
 					bool execute_success = execute_current_command(state);
 					if ( !execute_success ) {
 						fprintf(stderr, "[error]: syntax error: can't execute command at line %d\n", state->current_line);
+			
 						yyterminate();
 					}
+
+					set_current_command(state, C_EMPTY, 0);
 				}
 			}
 	YY_BREAK
 case 13:
 YY_RULE_SETUP
-#line 81 "interpreter.l"
+#line 114 "interpreter.l"
 { 
 				/* skip */ 
 			}
@@ -879,10 +912,11 @@ YY_RULE_SETUP
 case 14:
 /* rule 14 can match eol */
 YY_RULE_SETUP
-#line 85 "interpreter.l"
+#line 118 "interpreter.l"
 { 
 				if (state->current_command != C_EMPTY) {
 					fprintf(stderr, "[error]: syntax error, invalid command arguments at line %d\n", state->current_line);
+			
 					yyterminate();
 		  		}
 
@@ -891,14 +925,15 @@ YY_RULE_SETUP
 	YY_BREAK
 case 15:
 YY_RULE_SETUP
-#line 94 "interpreter.l"
+#line 128 "interpreter.l"
 { 
 				fprintf(stderr, "[error]: unresolved symbol \'%s\' at line %d\n", yytext, state->current_line);
+			
 				yyterminate();
 			}
 	YY_BREAK
 case YY_STATE_EOF(INITIAL):
-#line 99 "interpreter.l"
+#line 134 "interpreter.l"
 { 
 				if (state->current_command != C_EMPTY) {
 					fprintf(stderr, "[error]: unexpected EOF\n");
@@ -909,10 +944,10 @@ case YY_STATE_EOF(INITIAL):
 	YY_BREAK
 case 16:
 YY_RULE_SETUP
-#line 106 "interpreter.l"
+#line 141 "interpreter.l"
 ECHO;
 	YY_BREAK
-#line 916 "lex.yy.c"
+#line 951 "lex.yy.c"
 
 	case YY_END_OF_BUFFER:
 		{
@@ -1908,20 +1943,41 @@ void yyfree (void * ptr )
 
 #define YYTABLES_NAME "yytables"
 
-#line 106 "interpreter.l"
+#line 141 "interpreter.l"
 
 
 
 void lets_exit(int status) {
 	destroy_commands_state(state);
 	yylex_destroy();
-
+	
+	fclose(input_file);
 	exit(status);
-
 }
-int main() {
-	state = create_commands_state();
 
+void say_hello() {
+	printf("||==========================================||\n");
+	printf("||                                          ||\n");
+	printf("||         3-address code interpreter       ||\n");
+	printf("||	  execute ./interpreter <FILE>	    ||\n");
+	printf("||					    ||\n");
+	printf("||==========================================||\n");	
+}
+
+int main(int argc, char* argv[]) {
+	say_hello();	
+	if (argc != 2) {
+		abort_prg("Error: correct way to execute: ./interpeter <FILE>");
+	} 
+
+	input_file = fopen(argv[1], "r");
+	if (input_file == NULL) {
+		abort_prg("Error: incorrect input file :(");
+	}
+
+	state = create_commands_state(input_file, stdout);
+	yyin = state->input;
+	
 	yylex();
 
 	lets_exit(0);
