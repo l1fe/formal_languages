@@ -1,7 +1,0 @@
-let x 5
-let y 5
-out x
-add x x x
-jmp 1
-out x
-
