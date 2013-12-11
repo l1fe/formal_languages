@@ -69,7 +69,6 @@ typedef union YYSTYPE
 	v_type variable_type;
 	value_t value;
 	statement_t* stmt;
-	declaration_t* decl;
 	expression_t* exp;
 	op_type operation_type;
 

@@ -21,7 +21,6 @@
 	v_type variable_type;
 	value_t value;
 	statement_t* stmt;
-	declaration_t* decl;
 	expression_t* exp;
 	op_type operation_type;
 };
@@ -45,12 +44,12 @@
 %token BOOLEAN
 
 %type <exp> exp;
-%type <exp> binary_exp;
 
-%type <decl> local_declaration;
+%type <stmt> statement;
 %type <stmt> assign_statement;
+%type <stmt> local_declaration;
 
-%type <exp> literal_exp;
+%type <value> literal_exp;
 
 %type <operation_type> binary_op;
 
@@ -70,29 +69,40 @@ class_body:			main_method_declaration '{' method_body '}'
 main_method_declaration:	PUBLIC STATIC VOID MAIN '(' MAIN_ARGS ID ')'
 
 method_body:			  /* empty */
-				| method_body local_declaration
 				| method_body statement
+				{
+					main_class.add_statement($2);
+				}
 			
+statement:			local_declaration
+				| assign_statement
+		
 
 local_declaration:		TYPE ID ';'
 				{
-					$$ = new declaration_t($2, $1);
-					main_class.add_declaration($$);
+					$$ = new declaration_statement_t($2, $1);
 				}
-
-statement:			assign_statement
-
+		
 assign_statement:		ID '=' exp ';'
 				{
 					$$ = new assignment_statement_t($1, $3);
-					main_class.add_statement($$);
 				}
 
-exp:				literal_exp | binary_exp | ID
+exp:				exp binary_op exp
+				{
+					$$ = new binary_expression_t($2, $1, $3);
+				}
+				| literal_exp
+				{
+					$$ = new literal_expression_t($1);
+				}
+				| ID
+				{
+					$$ = new var_ref_expression_t($1);
+				}
+				
 
-literal_exp:			BOOLEAN | INT 
-	
-binary_exp:			exp binary_op exp
+literal_exp:			BOOLEAN | INT
 
 binary_op:
 	'+'			{
@@ -139,6 +149,7 @@ int main(int argc, char* argv[]) {
 	
 	yyparse();
 
+	main_class.run();
 	return 0;	
 }
 

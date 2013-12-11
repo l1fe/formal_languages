@@ -1,6 +1,7 @@
 #include <map>
 #include <string>
 #include <vector>
+#include <iostream>
 
 enum v_type {
 	vt_int,
@@ -17,6 +18,7 @@ enum op_type {
 
 struct value_t {
 	v_type var_type;
+	
 	union {
 		int val_int;
 		bool val_boolean;
@@ -84,23 +86,104 @@ struct code_block_t {
 	std::map<std::string, variable_t*> var_map;	
 };
 
-struct declaration_t {
-	declaration_t(std::string var_name, v_type var_type) {
+struct expression_t {
+	virtual value_t evaluate() = 0;
+};
+
+
+
+struct literal_expression_t : public expression_t {
+	literal_expression_t(value_t value) {
+		this->value = value;
+	}
+	
+	virtual value_t evaluate() {
+		switch (value.var_type) {
+			case vt_int:
+				std::cout << value.val_int;
+				break;
+			case vt_boolean:
+				std::cout << value.val_boolean;
+				break;
+		}
+		
+		return value;	
+	}
+	
+	value_t value;
+};
+
+struct binary_expression_t : public expression_t {
+	binary_expression_t(op_type operation_type, expression_t* arg1, expression_t* arg2) {
+		this->operation_type = operation_type;
+		this->arg1 = arg1;
+		this->arg2 = arg2;
+	}
+	
+	virtual value_t evaluate() {
+		switch (operation_type) {
+			case op_add:
+				std::cout << "add ";
+				break;
+			case op_sub:
+				std::cout << "sub ";
+				break;
+			case op_mul:
+				std::cout << "mul ";
+				break;
+			case op_div:
+				std::cout << "div ";
+				break;
+		}
+		
+		value_t arg1_val = arg1->evaluate();
+		
+		std::cout << " ";
+		
+		value_t arg2_val = arg2->evaluate();
+		
+		value_t x;
+		return x;
+	}
+	
+	op_type operation_type;
+	expression_t* arg1;
+	expression_t* arg2;
+};
+
+struct var_ref_expression_t: public expression_t {
+	var_ref_expression_t(std::string name) {
+		this->name = name;
+	}
+	
+	virtual value_t evaluate() {
+		//TODO
+		
+		value_t x;
+		return x;
+	}
+	
+	std::string name;
+};
+
+struct statement_t {
+	virtual void execute(code_block_t* current_block) = 0;
+};
+
+struct declaration_statement_t : public statement_t {
+	declaration_statement_t(std::string var_name, v_type var_type) {
 		this->var_name = var_name;
 		this->var_type = var_type;
+	}
+	
+	virtual void execute(code_block_t* current_block) {
+		std::cout << "let " << var_name << " " << 0 << std::endl;
 	}
 	
 	std::string var_name;
 	v_type var_type;
 };
 
-struct expression_t {
-	virtual void execute(code_block_t* current_block) = 0;
-};
-
-struct statement_t {
-	virtual void execute(code_block_t* current_block) = 0;
-};
 
 struct assignment_statement_t : public statement_t {
 	assignment_statement_t(std::string var_name, expression_t* expr) {
@@ -109,7 +192,9 @@ struct assignment_statement_t : public statement_t {
 	}
 	
 	virtual void execute(code_block_t* current_block) {
-
+		expr->evaluate();
+		
+		std::cout << " " << var_name << std::endl;
 	}
 	
 	std::string var_name;
@@ -117,17 +202,23 @@ struct assignment_statement_t : public statement_t {
 };
 
 struct class_t {
-	void add_declaration(declaration_t* decl) {
-		decls.push_back(decl);
+	class_t() {
+		main_block = new code_block_t(NULL);
 	}
 	
 	void add_statement(statement_t* stmt) {
 		stmts.push_back(stmt);	
 	}
 	
+	void run() {
+		for (int i = 0; i < stmts.size(); ++i) {
+			stmts[i]->execute(main_block);
+		}
+	}
+	
+	code_block_t* main_block;
+	
 	std::string name;
 	
 	std::vector<statement_t*> stmts;
-	std::vector<declaration_t*> decls;
-	std::vector<expression_t*> exprs;
 };
