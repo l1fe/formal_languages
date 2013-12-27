@@ -1,0 +1,17 @@
+int main() {
+    int rtrn = 1;
+    int k = 3;
+    int n = 4;
+
+    while (k > 0) {
+        if (k % 2 == 0) {
+            n = n * n;
+            k = k / 2;
+        } else {
+            rtrn = rtrn * n;
+            k = k - 1;
+        }
+    }
+
+    printf("%d\n", rtrn);
+}

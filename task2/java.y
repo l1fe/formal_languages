@@ -25,9 +25,6 @@
 	op_type operation_type;
 };
 
-// Types
-
-// Words
 %token <word> ID
 
 // Reserved words
@@ -37,6 +34,7 @@
 %token MAIN_ARGS
 %token MAIN
 %token VOID
+%token SLIB_PRINT
 
 %token <variable_type> TYPE
 
@@ -47,11 +45,15 @@
 
 %type <stmt> statement;
 %type <stmt> assign_statement;
+%type <stmt> print_statement;
 %type <stmt> local_declaration;
 
 %type <value> literal_exp;
 
-%type <operation_type> binary_op;
+// Priority
+%left '='
+%left '+' '-'
+%left '*' '/'
 
 %%
 
@@ -59,67 +61,41 @@ program:			class_declaration
 
 class_declaration:		class_header '{' class_body '}'
 
-class_header:			PUBLIC CLASS ID
-				{
-					main_class.name = $3;
-				}
+class_header:			PUBLIC CLASS ID 
 
 class_body:			main_method_declaration '{' method_body '}'
 
 main_method_declaration:	PUBLIC STATIC VOID MAIN '(' MAIN_ARGS ID ')'
 
-method_body:			  /* empty */
-				| method_body statement
-				{
-					main_class.add_statement($2);
-				}
-			
-statement:			local_declaration
-				| assign_statement
-		
-
-local_declaration:		TYPE ID ';'
-				{
-					$$ = new declaration_statement_t($2, $1);
-				}
-		
-assign_statement:		ID '=' exp ';'
-				{
-					$$ = new assignment_statement_t($1, $3);
-				}
-
-exp:				exp binary_op exp
-				{
-					$$ = new binary_expression_t($2, $1, $3);
-				}
-				| literal_exp
-				{
-					$$ = new literal_expression_t($1);
-				}
-				| ID
-				{
-					$$ = new var_ref_expression_t($1);
-				}
-				
-
-literal_exp:			BOOLEAN | INT
-
-binary_op:
-	'+'			{
-					$$ = op_add;			
-				}
+method_body:			/* nothing */
+				| 
+				method_body statement 			{ main_class.add_statement($2); 		}
 	
-	| '-'			{
-					$$ = op_sub;	
-				}
+statement:			local_declaration
+				| 
+				assign_statement
+				| 
+				print_statement
+
+print_statement:		SLIB_PRINT '(' exp ')' ';' 		{ $$ = new print_statement_t($3);	 	}
+
+local_declaration:		TYPE ID ';' 				{ $$ = new declaration_statement_t($2, $1);	}
+		
+assign_statement:		ID '=' exp ';' 				{ $$ = new assignment_statement_t($1, $3); 	}
+
+exp:				exp '+' exp	 			{ $$ = new binary_expression_t(op_add, $1, $3); }
+				| 
+				exp '-' exp 				{ $$ = new binary_expression_t(op_sub, $1, $3); }
+				| 
+				exp '*' exp		 		{ $$ = new binary_expression_t(op_mul, $1, $3); }
+				| 
+				exp '/' exp 				{ $$ = new binary_expression_t(op_div, $1, $3); }
+				| 
+				literal_exp 				{ $$ = new literal_expression_t($1); 		}
+				| 
+				ID 					{ $$ = new var_ref_expression_t($1); 		}
 				
-	| '*'			{
-					$$ = op_mul;		
-				}
-				
-	| '/'			{
-					$$ = op_div;	
-				}
+literal_exp:			BOOLEAN | INT
 
 %%
 
@@ -130,7 +106,7 @@ void yyerror(const char* s) {
 
 int main(int argc, char* argv[]) {
 	if (argc < 2) {
-		fprintf(stderr, "error: correct usage: ./%s <INPUT_FILE_NAME> <ARG_1> <ARG_2> ... <ARG_N>\n", argv[0]);
+		fprintf(stderr, "error: correct usage: %s <INPUT_FILE_NAME> <ARG_1> <ARG_2> ... <ARG_N>\n", argv[0]);
 		exit(1);
 	}
 

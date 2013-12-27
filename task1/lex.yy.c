@@ -1,6 +1,5 @@
-#line 2 "lex.yy.cpp"
 
-#line 4 "lex.yy.cpp"
+#line 3 "lex.yy.c"
 
 #define  YY_INT_ALIGNED short int
 
@@ -170,20 +169,7 @@ extern FILE *yyin, *yyout;
 #define EOB_ACT_END_OF_FILE 1
 #define EOB_ACT_LAST_MATCH 2
 
-    /* Note: We specifically omit the test for yy_rule_can_match_eol because it requires
-     *       access to the local variable yy_act. Since yyless() is a macro, it would break
-     *       existing scanners that call yyless() from OUTSIDE yylex. 
-     *       One obvious solution it to make yy_act a global. I tried that, and saw
-     *       a 5% performance hit in a non-yylineno scanner, because yy_act is
-     *       normally declared as a register variable-- so it is not worth it.
-     */
-    #define  YY_LESS_LINENO(n) \
-            do { \
-                int yyl;\
-                for ( yyl = n; yyl < yyleng; ++yyl )\
-                    if ( yytext[yyl] == '\n' )\
-                        --yylineno;\
-            }while(0)
+    #define YY_LESS_LINENO(n)
     
 /* Return all but the first "n" matched characters back to the input stream. */
 #define yyless(n) \
@@ -354,9 +340,6 @@ void yyfree (void *  );
 
 /* Begin user sect3 */
 
-#define yywrap(n) 1
-#define YY_SKIP_YYWRAP
-
 typedef unsigned char YY_CHAR;
 
 FILE *yyin = (FILE *) 0, *yyout = (FILE *) 0;
@@ -394,15 +377,13 @@ struct yy_trans_info
 	flex_int32_t yy_verify;
 	flex_int32_t yy_nxt;
 	};
-static yyconst flex_int16_t yy_accept[66] =
+static yyconst flex_int16_t yy_accept[44] =
     {   0,
-        0,    0,   17,   15,   14,   14,   13,    7,   12,   12,
-       12,   12,   12,   12,   12,   12,   12,   12,   12,   12,
-        7,   12,   12,   12,   12,   12,   12,   12,   12,   12,
-       12,   12,   12,   12,   12,   12,   10,   12,   12,   12,
-       12,   12,   12,   12,   12,   12,    5,   12,   12,    8,
-        4,   12,   12,    2,    9,   12,   12,   12,   12,    1,
-        3,    0,   11,    6,    0
+        0,    0,   17,   15,   13,   14,   12,   11,   11,   11,
+       11,   11,   11,   11,   11,   11,   11,   13,   12,   11,
+       11,   11,   11,   11,   11,   11,   11,   11,   11,   11,
+        3,    8,    6,    7,    1,    2,    5,    9,    4,   11,
+       11,   10,    0
     } ;
 
 static yyconst flex_int32_t yy_ec[256] =
@@ -410,17 +391,17 @@ static yyconst flex_int32_t yy_ec[256] =
         1,    1,    1,    1,    1,    1,    1,    1,    2,    3,
         1,    1,    1,    1,    1,    1,    1,    1,    1,    1,
         1,    1,    1,    1,    1,    1,    1,    1,    1,    1,
-        1,    2,    1,    1,    1,    1,    1,    1,    1,    4,
-        4,    4,    4,    4,    4,    4,    4,    5,    5,    5,
-        5,    5,    5,    5,    5,    5,    5,    1,    4,    4,
-        4,    4,    1,    1,    6,    6,    6,    6,    6,    6,
-        6,    6,    6,    6,    6,    6,    6,    6,    6,    6,
-        6,    6,    7,    6,    6,    6,    6,    6,    6,    6,
-        8,    1,    9,    1,   10,    1,   11,   12,   13,   14,
+        1,    2,    1,    1,    1,    1,    1,    1,    1,    1,
+        1,    1,    1,    1,    1,    1,    1,    4,    4,    4,
+        4,    4,    4,    4,    4,    4,    4,    1,    1,    1,
+        1,    1,    1,    1,    5,    5,    5,    5,    5,    5,
+        5,    5,    5,    5,    5,    5,    5,    5,    5,    5,
+        5,    5,    5,    5,    5,    5,    5,    5,    5,    5,
+        1,    1,    1,    1,    5,    1,    6,    7,    8,    9,
 
-       15,   16,   17,    6,   18,    6,    6,   19,   20,   21,
-       22,   23,    6,   24,   25,   26,   27,   28,    6,    6,
-        6,    6,    4,    1,    4,    1,    1,    1,    1,    1,
+       10,    5,    5,    5,   11,   12,    5,   13,   14,    5,
+       15,   16,    5,    5,   17,   18,   19,   20,    5,    5,
+        5,    5,    1,    1,    1,    1,    1,    1,    1,    1,
         1,    1,    1,    1,    1,    1,    1,    1,    1,    1,
         1,    1,    1,    1,    1,    1,    1,    1,    1,    1,
         1,    1,    1,    1,    1,    1,    1,    1,    1,    1,
@@ -437,71 +418,51 @@ static yyconst flex_int32_t yy_ec[256] =
         1,    1,    1,    1,    1
     } ;
 
-static yyconst flex_int32_t yy_meta[29] =
+static yyconst flex_int32_t yy_meta[21] =
     {   0,
-        1,    1,    1,    1,    2,    2,    2,    1,    1,    2,
-        2,    2,    2,    2,    2,    2,    2,    2,    2,    2,
-        2,    2,    2,    2,    2,    2,    2,    2
+        1,    1,    1,    2,    2,    2,    2,    2,    2,    2,
+        2,    2,    2,    2,    2,    2,    2,    2,    2,    2
     } ;
 
-static yyconst flex_int16_t yy_base[67] =
+static yyconst flex_int16_t yy_base[45] =
     {   0,
-        0,    0,   74,   75,   75,   75,   75,   68,    0,   46,
-        0,   49,   51,   58,   47,   56,   39,   39,   40,   41,
-       57,    0,   37,   38,   48,   39,   31,   38,   43,   43,
-       26,   34,   33,   31,   24,   23,    0,   26,   27,   19,
-       29,   29,   21,   26,   15,   24,    0,   20,   19,    0,
-        0,   19,   24,    0,    0,   21,   20,   24,   10,    0,
-        0,   21,    0,   75,   75,   27
+        0,    0,   48,   49,   45,   49,   42,    0,   36,   30,
+       32,   28,   31,    6,   21,   20,   32,   35,   32,    0,
+       26,   18,   13,   16,   13,   10,   16,   10,   20,   19,
+        0,    0,    0,    0,    0,    0,    0,    0,    0,   11,
+       13,    0,   49,   20
     } ;
 
-static yyconst flex_int16_t yy_def[67] =
+static yyconst flex_int16_t yy_def[45] =
     {   0,
-       65,    1,   65,   65,   65,   65,   65,   65,   66,   66,
-       66,   66,   66,   66,   66,   66,   66,   66,   66,   66,
-       65,   66,   66,   66,   66,   66,   66,   66,   66,   66,
-       66,   66,   66,   66,   66,   66,   66,   66,   66,   66,
-       66,   66,   66,   66,   66,   66,   66,   66,   66,   66,
-       66,   66,   66,   66,   66,   66,   66,   66,   66,   66,
-       66,   65,   66,   65,    0,   65
+       43,    1,   43,   43,   43,   43,   43,   44,   44,   44,
+       44,   44,   44,   44,   44,   44,   44,   43,   43,   44,
+       44,   44,   44,   44,   44,   44,   44,   44,   44,   44,
+       44,   44,   44,   44,   44,   44,   44,   44,   44,   44,
+       44,   44,    0,   43
     } ;
 
-static yyconst flex_int16_t yy_nxt[104] =
+static yyconst flex_int16_t yy_nxt[70] =
     {   0,
-        4,    5,    6,    7,    8,    9,   10,    4,    4,   11,
-        9,   12,   13,    9,    9,   14,    9,   15,    9,   16,
-        9,    9,   17,    9,   18,   19,    9,   20,   22,   64,
-       63,   62,   61,   60,   59,   58,   57,   56,   55,   54,
-       53,   52,   51,   50,   49,   48,   47,   46,   45,   44,
-       43,   42,   41,   40,   39,   38,   37,   36,   35,   34,
-       33,   21,   32,   31,   30,   29,   28,   27,   26,   25,
-       24,   23,   21,   65,    3,   65,   65,   65,   65,   65,
-       65,   65,   65,   65,   65,   65,   65,   65,   65,   65,
-       65,   65,   65,   65,   65,   65,   65,   65,   65,   65,
-
-       65,   65,   65
+        4,    5,    6,    7,    8,    9,    8,   10,   11,    8,
+        8,   12,   13,   14,   15,    8,   16,   17,    8,    8,
+       26,   20,   42,   41,   27,   40,   39,   38,   37,   36,
+       35,   34,   33,   32,   31,   19,   18,   30,   29,   28,
+       25,   24,   23,   22,   21,   19,   18,   43,    3,   43,
+       43,   43,   43,   43,   43,   43,   43,   43,   43,   43,
+       43,   43,   43,   43,   43,   43,   43,   43,   43
     } ;
 
-static yyconst flex_int16_t yy_chk[104] =
+static yyconst flex_int16_t yy_chk[70] =
     {   0,
         1,    1,    1,    1,    1,    1,    1,    1,    1,    1,
         1,    1,    1,    1,    1,    1,    1,    1,    1,    1,
-        1,    1,    1,    1,    1,    1,    1,    1,   66,   62,
-       59,   58,   57,   56,   53,   52,   49,   48,   46,   45,
-       44,   43,   42,   41,   40,   39,   38,   36,   35,   34,
-       33,   32,   31,   30,   29,   28,   27,   26,   25,   24,
-       23,   21,   20,   19,   18,   17,   16,   15,   14,   13,
-       12,   10,    8,    3,   65,   65,   65,   65,   65,   65,
-       65,   65,   65,   65,   65,   65,   65,   65,   65,   65,
-       65,   65,   65,   65,   65,   65,   65,   65,   65,   65,
-
-       65,   65,   65
+       14,   44,   41,   40,   14,   30,   29,   28,   27,   26,
+       25,   24,   23,   22,   21,   19,   18,   17,   16,   15,
+       13,   12,   11,   10,    9,    7,    5,    3,   43,   43,
+       43,   43,   43,   43,   43,   43,   43,   43,   43,   43,
+       43,   43,   43,   43,   43,   43,   43,   43,   43
     } ;
-
-/* Table of booleans, true if rule could match eol. */
-static yyconst flex_int32_t yy_rule_can_match_eol[17] =
-    {   0,
-0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0,     };
 
 static yy_state_type yy_last_accepting_state;
 static char *yy_last_accepting_cpos;
@@ -517,10 +478,44 @@ int yy_flex_debug = 0;
 #define YY_MORE_ADJ 0
 #define YY_RESTORE_YY_MORE_OFFSET
 char *yytext;
-#line 1 "java.l"
-#line 4 "java.l"
-	#include "bisondef.h"
-#line 524 "lex.yy.cpp"
+#line 1 "interpreter.l"
+#line 2 "interpreter.l"
+#include <stdlib.h>
+#include <stdio.h>
+#include <stdbool.h>
+#include "command_types.h"
+#include "./static_hash_table/static_hash_table.h"
+#include "./utils/utils.h"
+#include "./state/state.h"
+
+commands_state* state;
+FILE* input_file;
+
+void lets_exit(int);
+
+//unsafe
+bool jump_to_line(int line_to_jmp) {
+	//printf("line to jump = %d\n", line_to_jmp);
+
+	int succ;
+	int offset = dynamic_array_get(state->input_lines_info, line_to_jmp, &succ);
+	if (succ < 0) {
+		return false;
+	}
+
+	/*fseek(yyin, offset, SEEK_SET);
+	state->current_line = line_to_jmp;
+	yyrestart(yyin);*/
+
+	fseek(state->input, offset, SEEK_SET);
+	state->current_line = line_to_jmp;
+
+	yyrestart(state->input);
+
+	return true;
+}
+
+#line 519 "lex.yy.c"
 
 #define INITIAL 0
 
@@ -707,10 +702,10 @@ YY_DECL
 	register char *yy_cp, *yy_bp;
 	register int yy_act;
     
-#line 13 "java.l"
+#line 43 "interpreter.l"
 
 
-#line 714 "lex.yy.cpp"
+#line 709 "lex.yy.c"
 
 	if ( !(yy_init) )
 		{
@@ -763,13 +758,13 @@ yy_match:
 			while ( yy_chk[yy_base[yy_current_state] + yy_c] != yy_current_state )
 				{
 				yy_current_state = (int) yy_def[yy_current_state];
-				if ( yy_current_state >= 66 )
+				if ( yy_current_state >= 44 )
 					yy_c = yy_meta[(unsigned int) yy_c];
 				}
 			yy_current_state = yy_nxt[yy_base[yy_current_state] + (unsigned int) yy_c];
 			++yy_cp;
 			}
-		while ( yy_base[yy_current_state] != 75 );
+		while ( yy_base[yy_current_state] != 49 );
 
 yy_find_action:
 		yy_act = yy_accept[yy_current_state];
@@ -781,16 +776,6 @@ yy_find_action:
 			}
 
 		YY_DO_BEFORE_ACTION;
-
-		if ( yy_act != YY_END_OF_BUFFER && yy_rule_can_match_eol[yy_act] )
-			{
-			int yyl;
-			for ( yyl = 0; yyl < yyleng; ++yyl )
-				if ( yytext[yyl] == '\n' )
-					   
-    yylineno++;
-;
-			}
 
 do_action:	/* This label is used only to access EOF actions. */
 
@@ -805,109 +790,164 @@ do_action:	/* This label is used only to access EOF actions. */
 
 case 1:
 YY_RULE_SETUP
-#line 15 "java.l"
-{ return PUBLIC; }
+#line 45 "interpreter.l"
+{ set_current_command(state, C_LET, 2); }
 	YY_BREAK
 case 2:
 YY_RULE_SETUP
-#line 17 "java.l"
-{ return CLASS; }
+#line 46 "interpreter.l"
+{ set_current_command(state, C_MOV, 2); }
 	YY_BREAK
 case 3:
 YY_RULE_SETUP
-#line 19 "java.l"
-{ return STATIC; }
+#line 47 "interpreter.l"
+{ set_current_command(state, C_ADD, 3); }
 	YY_BREAK
 case 4:
 YY_RULE_SETUP
-#line 21 "java.l"
-{ return VOID; }
+#line 48 "interpreter.l"
+{ set_current_command(state, C_SUB, 3); }
 	YY_BREAK
 case 5:
 YY_RULE_SETUP
-#line 23 "java.l"
-{ return MAIN; }
+#line 49 "interpreter.l"
+{ set_current_command(state, C_MUL, 3); }
 	YY_BREAK
 case 6:
 YY_RULE_SETUP
-#line 25 "java.l"
-{ return MAIN_ARGS; }
+#line 50 "interpreter.l"
+{ set_current_command(state, C_DIV, 3); }
 	YY_BREAK
 case 7:
 YY_RULE_SETUP
-#line 27 "java.l"
-{
-			yylval.value.var_type = vt_int;
-			yylval.value.val_int = atoi(yytext);
-			return INT;
-		}
+#line 51 "interpreter.l"
+{ set_current_command(state, C_JMP, 1); }
 	YY_BREAK
 case 8:
 YY_RULE_SETUP
-#line 33 "java.l"
-{
-			yylval.value.var_type = vt_boolean;
-			yylval.value.val_boolean = true;
-			return BOOLEAN;
-		}
+#line 52 "interpreter.l"
+{ set_current_command(state, C_CMP, 5); }
 	YY_BREAK
 case 9:
 YY_RULE_SETUP
-#line 39 "java.l"
-{
-			yylval.value.var_type = vt_boolean;
-			yylval.value.val_boolean = false;
-			return BOOLEAN;
-		}
+#line 53 "interpreter.l"
+{ set_current_command(state, C_OUT, 1); }
 	YY_BREAK
 case 10:
 YY_RULE_SETUP
-#line 45 "java.l"
-{
-			yylval.variable_type = vt_int; 
-			return TYPE; 
-		}
+#line 54 "interpreter.l"
+{ static_hash_table_print(state->vars_h_table); }
 	YY_BREAK
 case 11:
 YY_RULE_SETUP
-#line 50 "java.l"
-{ 
-			yylval.variable_type = vt_boolean;
-			return TYPE; 
-		}
+#line 56 "interpreter.l"
+{
+				bool add_success = add_command_argument(state, 0, strdup(yytext), A_NAME); 
+				if ( !add_success ) {
+					fprintf(stderr, "[error]: syntax error: invalid command arguments at line %d\n", state->current_line);
+			
+					yyterminate();
+		  		}
+		
+				int command_is_correct_indicator;
+				bool command_is_ready = check_current_command_ready(state, &command_is_correct_indicator);
+
+				if (command_is_correct_indicator == -1) {
+					fprintf(stderr, "[error]: syntax error: invalid command arguments at line %d\n", state->current_line);
+			
+					yyterminate();
+		  		}
+
+				if ( command_is_ready ) {
+					bool execute_success = execute_current_command(state);
+					if ( !execute_success ) {
+						fprintf(stderr, "[error]: syntax error: can't execute command at line %d\n", state->current_line);
+			
+						yyterminate();
+					}
+
+					set_current_command(state, C_EMPTY, 0);
+				}
+			}
 	YY_BREAK
 case 12:
 YY_RULE_SETUP
-#line 55 "java.l"
-{ 
-			strcpy(yylval.word, yytext);
-			return ID;
-		}
+#line 85 "interpreter.l"
+{
+				bool add_success = add_command_argument(state, atoi(yytext), NULL, A_INT); 
+				if ( !add_success ) {
+					fprintf(stderr, "[error]: syntax error: invalid command arguments at line %d\n", state->current_line);
+			
+					yyterminate();
+		  		}
+		
+				int command_is_correct_indicator;
+				bool command_is_ready = check_current_command_ready(state, &command_is_correct_indicator);
+
+				if (command_is_correct_indicator == -1) {
+					fprintf(stderr, "[error]: syntax error: invalid command arguments at line %d\n", state->current_line);
+			
+					yyterminate();
+		  		}
+
+				if ( command_is_ready ) {
+					bool execute_success = execute_current_command(state);
+					if ( !execute_success ) {
+						fprintf(stderr, "[error]: syntax error: can't execute command at line %d\n", state->current_line);
+			
+						yyterminate();
+					}
+
+					set_current_command(state, C_EMPTY, 0);
+				}
+			}
 	YY_BREAK
 case 13:
 YY_RULE_SETUP
-#line 60 "java.l"
-{ return *yytext; }
+#line 114 "interpreter.l"
+{ 
+				/* skip */ 
+			}
 	YY_BREAK
 case 14:
 /* rule 14 can match eol */
 YY_RULE_SETUP
-#line 62 "java.l"
-;
+#line 118 "interpreter.l"
+{ 
+				if (state->current_command != C_EMPTY) {
+					fprintf(stderr, "[error]: syntax error, invalid command arguments at line %d\n", state->current_line);
+			
+					yyterminate();
+		  		}
+
+				state->current_line += 1;
+			}
 	YY_BREAK
 case 15:
 YY_RULE_SETUP
-#line 64 "java.l"
-{ fprintf(stderr, "unknown symbol %c", *yytext); }
+#line 128 "interpreter.l"
+{ 
+				fprintf(stderr, "[error]: unresolved symbol \'%s\' at line %d\n", yytext, state->current_line);
+			
+				yyterminate();
+			}
+	YY_BREAK
+case YY_STATE_EOF(INITIAL):
+#line 134 "interpreter.l"
+{ 
+				if (state->current_command != C_EMPTY) {
+					fprintf(stderr, "[error]: unexpected EOF\n");
+				}
+		  
+				yyterminate();
+			}
 	YY_BREAK
 case 16:
 YY_RULE_SETUP
-#line 66 "java.l"
+#line 141 "interpreter.l"
 ECHO;
 	YY_BREAK
-#line 909 "lex.yy.cpp"
-case YY_STATE_EOF(INITIAL):
-	yyterminate();
+#line 951 "lex.yy.c"
 
 	case YY_END_OF_BUFFER:
 		{
@@ -1197,7 +1237,7 @@ static int yy_get_next_buffer (void)
 		while ( yy_chk[yy_base[yy_current_state] + yy_c] != yy_current_state )
 			{
 			yy_current_state = (int) yy_def[yy_current_state];
-			if ( yy_current_state >= 66 )
+			if ( yy_current_state >= 44 )
 				yy_c = yy_meta[(unsigned int) yy_c];
 			}
 		yy_current_state = yy_nxt[yy_base[yy_current_state] + (unsigned int) yy_c];
@@ -1225,11 +1265,11 @@ static int yy_get_next_buffer (void)
 	while ( yy_chk[yy_base[yy_current_state] + yy_c] != yy_current_state )
 		{
 		yy_current_state = (int) yy_def[yy_current_state];
-		if ( yy_current_state >= 66 )
+		if ( yy_current_state >= 44 )
 			yy_c = yy_meta[(unsigned int) yy_c];
 		}
 	yy_current_state = yy_nxt[yy_base[yy_current_state] + (unsigned int) yy_c];
-	yy_is_jam = (yy_current_state == 65);
+	yy_is_jam = (yy_current_state == 43);
 
 	return yy_is_jam ? 0 : yy_current_state;
 }
@@ -1265,10 +1305,6 @@ static int yy_get_next_buffer (void)
 		}
 
 	*--yy_cp = (char) c;
-
-    if ( c == '\n' ){
-        --yylineno;
-    }
 
 	(yytext_ptr) = yy_bp;
 	(yy_hold_char) = *yy_cp;
@@ -1344,11 +1380,6 @@ static int yy_get_next_buffer (void)
 	c = *(unsigned char *) (yy_c_buf_p);	/* cast for 8-bit char's */
 	*(yy_c_buf_p) = '\0';	/* preserve yytext */
 	(yy_hold_char) = *++(yy_c_buf_p);
-
-	if ( c == '\n' )
-		   
-    yylineno++;
-;
 
 	return c;
 }
@@ -1820,9 +1851,6 @@ static int yy_init_globals (void)
      * This function is called from yylex_destroy(), so don't allocate here.
      */
 
-    /* We do not touch yylineno unless the option is enabled. */
-    yylineno =  1;
-    
     (yy_buffer_stack) = 0;
     (yy_buffer_stack_top) = 0;
     (yy_buffer_stack_max) = 0;
@@ -1915,7 +1943,43 @@ void yyfree (void * ptr )
 
 #define YYTABLES_NAME "yytables"
 
-#line 66 "java.l"
+#line 141 "interpreter.l"
 
 
+
+void lets_exit(int status) {
+	destroy_commands_state(state);
+	yylex_destroy();
+	
+	fclose(input_file);
+	exit(status);
+}
+
+void say_hello() {
+	printf("||==========================================||\n");
+	printf("||                                          ||\n");
+	printf("||         3-address code interpreter       ||\n");
+	printf("||	  execute ./interpreter <FILE>	    ||\n");
+	printf("||					    ||\n");
+	printf("||==========================================||\n");	
+}
+
+int main(int argc, char* argv[]) {
+	say_hello();	
+	if (argc != 2) {
+		abort_prg("Error: correct way to execute: ./interpeter <FILE>");
+	} 
+
+	input_file = fopen(argv[1], "r");
+	if (input_file == NULL) {
+		abort_prg("Error: incorrect input file :(");
+	}
+
+	state = create_commands_state(input_file, stdout);
+	yyin = state->input;
+	
+	yylex();
+
+	lets_exit(0);
+}
 

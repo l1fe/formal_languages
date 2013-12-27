@@ -24,6 +24,8 @@ WORD 			({LETTER}|_)({LETTER}|{DIGIT}|_)*
 
 "String[]"	{ return MAIN_ARGS; }
 
+"StaticJavaLib.println"	{ return SLIB_PRINT; }
+
 {DIGIT}+	{
 			yylval.value.var_type = vt_int;
 			yylval.value.val_int = atoi(yytext);

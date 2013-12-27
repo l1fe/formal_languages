@@ -9,7 +9,7 @@
 #include "../state/state.h"
 #include "../utils/utils.h"
 
-#define ALLOW_UNDECLARED false
+#define ALLOW_UNDECLARED true
 
 commands_state* create_commands_state(FILE* input_file, FILE* output_file) {
 	commands_state* state = (commands_state*)malloc(sizeof(commands_state));
@@ -384,7 +384,6 @@ bool execute_C_ADD(commands_state* state) {
 	int b_value = get_var_value_by_name(state, b_name, &success);
 	if (success < 0) {
 		if (ALLOW_UNDECLARED) {
-			printf("add: var not found\n");
 			bool add_var_succ = add_var(state, b_name, state->default_init_value);
 			if ( !add_var_succ ) {
 				return false;
@@ -399,10 +398,6 @@ bool execute_C_ADD(commands_state* state) {
 	get_var_value_by_name(state, c_name, &success);
 
 	if (success < 0 && !ALLOW_UNDECLARED) {
-		return false;
-	}
-
-	if (INT_MAX - a_value < b_value || INT_MAX - b_value < a_value) {
 		return false;
 	}
 
@@ -447,10 +442,6 @@ bool execute_C_MUL(commands_state* state) {
 	get_var_value_by_name(state, c_name, &success);
 	
 	if (success < 0 && !ALLOW_UNDECLARED) {
-		return false;
-	}
-
-	if (INT_MAX / a_value < b_value || INT_MAX / b_value < a_value) {
 		return false;
 	}
 
@@ -546,10 +537,11 @@ bool execute_C_SUB(commands_state* state) {
 		return false;
 	}
 
+	/*
 	if (INT_MAX - abs(a_value) < abs(b_value) || INT_MAX - abs(b_value) < abs(a_value)) {
 		return false;
 	}
-
+	*/
 	return add_var(state, c_name, a_value - b_value);
 }
 
