@@ -28,6 +28,9 @@ void class_t::run() {
 		write(fs, stmt_result);
 	}
 
+	fs << std::endl;
+
+	std::cout << "line number = " << tr_state.line_number << std::endl; 
 	fs.close();
 }
 

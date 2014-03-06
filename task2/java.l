@@ -12,17 +12,21 @@ WORD 			({LETTER}|_)({LETTER}|{DIGIT}|_)*
 
 %%
 
-"public"	{ return PUBLIC; }
+"public"	{ return PUBLIC;	}
 
-"class"		{ return CLASS; }
+"class"		{ return CLASS;		}
 
-"static"	{ return STATIC; }
+"static"	{ return STATIC;	}
 
-"void"		{ return VOID; }
+"void"		{ return VOID;		}
 
-"main"		{ return MAIN; }
+"main"		{ return MAIN;		}
 
-"String[]"	{ return MAIN_ARGS; }
+"if"		{ return IF;		}	
+
+"else"		{ return ELSE;		}
+
+"String[]"	{ return MAIN_ARGS; 	}
 
 "StaticJavaLib.println"	{ return SLIB_PRINT; }
 
@@ -57,6 +61,22 @@ WORD 			({LETTER}|_)({LETTER}|{DIGIT}|_)*
 {WORD}		{ 
 			strcpy(yylval.word, yytext);
 			return ID;
+		}
+
+"<="		{
+			return LE;
+		}
+
+">="		{
+			return GE;
+		}
+
+"=="		{
+			return EQ;
+		}
+
+"!="		{
+			return NEQ;
 		}
 
 [+-/*\()_{}=;,<>.]	{ return *yytext; }

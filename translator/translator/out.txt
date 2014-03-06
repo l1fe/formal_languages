@@ -1,0 +1,26 @@
+let i 0
+let i 0
+let tmp0 5
+cmp i tmp0 4 9 9
+out i
+let tmp1 1
+add i tmp1 tmp2
+mov tmp2 i
+jmp 2
+let tmp3 10
+cmp i tmp3 11 17 17
+mul i i tmp4
+out tmp4
+let tmp5 1
+add i tmp5 tmp6
+mov tmp6 i
+jmp 9
+let tmp7 10
+cmp i tmp7 19 22 19
+let tmp8 666
+out tmp8
+jmp 26
+let tmp9 5
+let tmp11 0
+sub tmp11 tmp9 tmp10
+out tmp10

@@ -14,6 +14,16 @@ public:
         virtual std::vector<std::string> execute(code_block_t*, translator_state*) = 0;
 };
 
+class statement_list_t : public statement_t {
+public:
+	statement_list_t();
+
+	virtual std::vector<std::string> execute(code_block_t*, translator_state*);
+	void add_statement(statement_t* stmt);
+private:
+	std::vector<statement_t*> stmts;
+};
+
 class declaration_statement_t : public statement_t {
 public:
         declaration_statement_t(std::string, v_type);
@@ -41,6 +51,27 @@ public:
 	virtual std::vector<std::string> execute(code_block_t*, translator_state*);
 private:
 	expression_t* expr;
+};
+
+class code_block_statement_t : public statement_t {
+public:
+	code_block_statement_t(statement_list_t*);
+
+	virtual std::vector<std::string> execute(code_block_t*, translator_state*);
+private:
+	statement_list_t* stmts;
+};
+
+class conditional_statement_t : public statement_t {
+public:
+	conditional_statement_t(expression_t*, statement_t*);
+	conditional_statement_t(expression_t*, statement_t*, statement_t*);
+	
+	virtual std::vector<std::string> execute(code_block_t*, translator_state*);
+private:
+	expression_t* expr;
+	statement_t* stmt;
+	statement_t* sub_stmt;
 };
 
 #endif /* _STATEMENT_H_INCLUDED */

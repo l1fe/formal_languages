@@ -585,10 +585,16 @@ bool execute_C_CMP(commands_state* state) {
 	}
 
 	if (a_value < b_value) {
+		printf("first value < second value\n");
+		printf("jmp to %d\n", state->args[2].var_a_int);
 		return jump_to_line(state->args[2].var_a_int);
 	} else if (a_value == b_value) {
+		printf("first value == second value\n");
+		printf("jmp to %d\n", state->args[3].var_a_int);
 		return jump_to_line(state->args[3].var_a_int);
 	} else {
+		printf("first value > second value\n");
+		printf("jmp to %d\n", state->args[4].var_a_int);
 		return jump_to_line(state->args[4].var_a_int);
 	}
 

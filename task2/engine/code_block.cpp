@@ -32,19 +32,19 @@ variable_t* code_block_t::get_variable_from_block(code_block_t* block, std::stri
 	return it->second;
 }
 
-std::string code_block_t::get_temp_var_name(std::string& real_var_name) {
-	std::cout << "HashMap: query GET for key = '" << real_var_name << "'" << std::endl;
-	std::unordered_map<std::string, std::string>::iterator it = var_real_names.find(real_var_name);
-	if (it == var_real_names.end()) {
-		std::cout << "HashMap: not found" << std::endl;
+std::string code_block_t::get_temp_var_name(code_block_t* block, std::string& real_var_name) {
+	if (block == NULL) {
 		return std::string();
 	}
 
-	std::cout << "HashMap: found " << it->second << std::endl;
+	std::unordered_map<std::string, std::string>::iterator it = block->var_real_names.find(real_var_name);
+	if (it == var_real_names.end()) {
+		return get_temp_var_name(block->parent, real_var_name);	
+	}
+
 	return it->second;
 }
 
 void code_block_t::set_real_var_name(std::string real_var_name, std::string temp_var_name) {
-	std::cout << "HashMap: query PUT (" << real_var_name << "," << temp_var_name << ")" << std::endl;
 	var_real_names.insert(std::make_pair(real_var_name, temp_var_name));
 }

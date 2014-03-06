@@ -13,7 +13,15 @@ enum op_type {
 	op_add,
 	op_mul,
 	op_sub,
-	op_div
+	op_div,
+	op_and,
+	op_or,
+	op_eq,
+	op_ne,
+	op_less,
+	op_greater,
+	op_le,
+	op_ge
 };
 
 struct value_t {

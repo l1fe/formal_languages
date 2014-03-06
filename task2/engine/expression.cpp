@@ -79,12 +79,13 @@ std::vector<std::string> binary_expression_t::evaluate(code_block_t* code_block,
 }
 
 var_ref_expression_t::var_ref_expression_t(std::string name_): name(name_) { }
-
+ 
 std::vector<std::string> var_ref_expression_t::evaluate(code_block_t* code_block, translator_state* tr_state) {
 	std::vector<std::string> result;
 	std::stringstream ss;
 
-	std::string temp_var_name = code_block->get_temp_var_name(name);
+	std::string temp_var_name = code_block->get_temp_var_name(code_block, name);
+
 	ss << "mov " << temp_var_name << " " << tr_state->get_next_temp_var_name();
 	result.push_back(ss.str());
 

@@ -13,6 +13,8 @@ public:
 	std::string get_current_temp_var_name();
 	int get_index();
 	std::string generate_temp_var_name_with_index(int);
+
+	int line_number;
 private:
         int temp_var_index;
 };

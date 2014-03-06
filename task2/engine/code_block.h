@@ -12,7 +12,7 @@ public:
         bool declare_variable(std::string, v_type);
         variable_t* get_variable_from_block(code_block_t*, std::string);
 
-        std::string get_temp_var_name(std::string&);
+        std::string get_temp_var_name(code_block_t*, std::string&);
         void set_real_var_name(std::string, std::string);
 private:
         code_block_t* parent;

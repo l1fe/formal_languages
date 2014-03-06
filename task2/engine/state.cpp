@@ -3,7 +3,7 @@
 
 #include "./state.h"
 
-translator_state::translator_state(): temp_var_index(0) { }
+translator_state::translator_state(): temp_var_index(0), line_number(-1) { }
 
 std::string translator_state::get_next_temp_var_name() {
 	temp_var_index += 1;
